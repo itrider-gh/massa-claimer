@@ -63,15 +63,15 @@ async function claimAllVestingSessions(accountAddress, privateKey, fee, claimAmo
 
 // Ensure necessary arguments are provided
 if (!process.argv[2] || !process.argv[3] || !process.argv[4] || !process.argv[5]) {
-    console.log('Usage: node script.js <accountAddress> <privateKey> <fee> <claimAmount>');
+    console.log('Usage: node script.js <accountAddress> <privateKey> <claimAmount> <fee>');
     process.exit(1);
 }
 
 // Retrieve command line arguments for account address, private key, fee, and amount to claim
 const accountAddress = process.argv[2];
 const privateKey = process.argv[3];
-const fee = process.argv[4];
-const claimAmount = process.argv[5];
+const claimAmount = process.argv[4];
+const fee = process.argv[5];
 
 
 // Invoke the main function with parameters

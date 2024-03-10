@@ -32,21 +32,21 @@ npm install @massalabs/massa-web3
 The script requires four parameters to run:
 - `accountAddress`: The Massa blockchain address of your account.
 - `privateKey`: The private key of your account.
-- `fee`: The transaction fee in Massa (MAS), to prioritize the transaction on the network.
 - `claimAmount`: The amount to be claimed from each vesting session, specified in Massa (MAS).
+- `fee`: The transaction fee in Massa (MAS), to prioritize the transaction on the network.
 
 Run the script using the command:
 
 ```
-node script.js <accountAddress> <privateKey> <fee> <claimAmount>
+node script.js <accountAddress> <privateKey> <claimAmount> <fee> 
 ```
 
 ### Example
 
 ```
-node script.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 0.1 100
+node script.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 100 0.1
 ```
-Replace placeholders with your actual account address, private key, desired fee, and claim amount.
+Replace placeholders with your actual account address, private key, claim amount, and desired fee.
 
 ## Security Note
 
