@@ -38,13 +38,13 @@ The script requires four parameters to run:
 Run the script using the command:
 
 ```
-node script.js <accountAddress> <privateKey> <claimAmount> <fee> 
+node massa-claimer.js <accountAddress> <privateKey> <claimAmount> <fee> 
 ```
 
 ### Example
 
 ```
-node script.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 100 0.1
+node massa-claimer.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 100 0.1
 ```
 Replace placeholders with your actual account address, private key, claim amount, and desired fee.
 
