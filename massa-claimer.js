@@ -1,12 +1,7 @@
-const { WalletClient, ClientFactory, SmartContractsClient, CHAIN_ID, Args, MassaUnits } = require('@massalabs/massa-web3');
+const { WalletClient, ClientFactory, CHAIN_ID, Args, MassaUnits, fromMAS } = require('@massalabs/massa-web3');
 const SC_ADDRESS = 'AS12qzyNBDnwqq2vYwvUMHzrtMkVp6nQGJJ3TETVKF5HCd4yymzJP';
 
-// Retrieve command line arguments for account address, private key, and fee
-const accountAddress = process.argv[2];
-const privateKey = process.argv[3];
-const fee = BigInt(process.argv[4]);
-
-async function claimAllVestingSessions(accountAddress, privateKey, fee) {
+async function claimAllVestingSessions(accountAddress, privateKey, fee, claimAmount) {
     try {
         // Initialize the client to interact with the Massa network
         const client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
@@ -43,21 +38,20 @@ async function claimAllVestingSessions(accountAddress, privateKey, fee) {
         const baseAccount = await WalletClient.getAccountFromSecretKey(privateKey);
 
         // Create a client for making smart contract calls
-        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
+        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true, baseAccount);
 
         // Attempt to claim the specified amount for each found session ID
         for (let sessionId of sessionIds) {
-            const amountToClaim = BigInt(1n * MassaUnits.oneMassa); // Amount to claim in Massa units
-            const serializedArgs = new Args().addU64(BigInt(sessionId)).addU64(amountToClaim).serialize();
+            const serializedArgs = new Args().addU64(BigInt(sessionId)).addU64(BigInt(fromMAS(claimAmount))).serialize();
 
             // Call the smart contract function to claim the amount
             const opId = await web3Client.smartContracts().callSmartContract({
                 targetAddress: SC_ADDRESS,
                 functionName: 'claimVestingSession',
                 parameter: serializedArgs,
-                maxGas: 4800754n,
-                coins: 0n,
-                fee: fee,
+                maxGas: BigInt(4800754),
+                coins: BigInt(0),
+                fee: fromMAS(fee),
             });
 
             console.log(`Session ID: ${sessionId}, Operation ID of the smart contract call: ${opId}`);
@@ -68,10 +62,17 @@ async function claimAllVestingSessions(accountAddress, privateKey, fee) {
 }
 
 // Ensure necessary arguments are provided
-if (!accountAddress || !privateKey || !fee) {
-    console.log('Usage: node script.js <accountAddress> <privateKey> <fee>');
+if (!process.argv[2] || !process.argv[3] || !process.argv[4] || !process.argv[5]) {
+    console.log('Usage: node script.js <accountAddress> <privateKey> <fee> <claimAmount>');
     process.exit(1);
 }
 
+// Retrieve command line arguments for account address, private key, fee, and amount to claim
+const accountAddress = process.argv[2];
+const privateKey = process.argv[3];
+const fee = process.argv[4];
+const claimAmount = process.argv[5];
+
+
 // Invoke the main function with parameters
-claimAllVestingSessions(accountAddress, privateKey, fee);
+claimAllVestingSessions(accountAddress, privateKey, fee, claimAmount);
