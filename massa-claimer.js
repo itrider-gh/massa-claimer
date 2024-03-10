@@ -1,8 +1,17 @@
 const { WalletClient, ClientFactory, CHAIN_ID, Args, MassaUnits, fromMAS } = require('@massalabs/massa-web3');
 const SC_ADDRESS = 'AS12qzyNBDnwqq2vYwvUMHzrtMkVp6nQGJJ3TETVKF5HCd4yymzJP';
 
-async function claimAllVestingSessions(accountAddress, privateKey, fee, claimAmount) {
+async function claimAllVestingSessions(accountAddress, privateKey, claimAmount, fee) {
     try {
+        const feeMAS = fromMAS(fee);
+        // Check if the fee exceeds the threshold
+        if (feeMAS > fromMAS('0.1')) {
+            console.log(`Warning: The transaction fee is set to ${fee} MAS and exceed 0.1 MAS, which is considered high.`);
+            console.log('Usage: node script.js <accountAddress> <privateKey> <claimAmount> <fee>');
+            console.log('Please adjust it to a lower value.');
+            process.exit(1);
+        }
+
         // Initialize the client to interact with the Massa network
         const client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
 
@@ -38,7 +47,7 @@ async function claimAllVestingSessions(accountAddress, privateKey, fee, claimAmo
         const baseAccount = await WalletClient.getAccountFromSecretKey(privateKey);
 
         // Create a client for making smart contract calls
-        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true, baseAccount);
+        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
 
         // Attempt to claim the specified amount for each found session ID
         for (let sessionId of sessionIds) {
@@ -51,7 +60,7 @@ async function claimAllVestingSessions(accountAddress, privateKey, fee, claimAmo
                 parameter: serializedArgs,
                 maxGas: BigInt(4800754),
                 coins: BigInt(0),
-                fee: fromMAS(fee),
+                fee: feeMAS,
             });
 
             console.log(`Session ID: ${sessionId}, Operation ID of the smart contract call: ${opId}`);
@@ -67,12 +76,11 @@ if (!process.argv[2] || !process.argv[3] || !process.argv[4] || !process.argv[5]
     process.exit(1);
 }
 
-// Retrieve command line arguments for account address, private key, fee, and amount to claim
+// Retrieve command line arguments for account address, private key, claim amount, and fee
 const accountAddress = process.argv[2];
 const privateKey = process.argv[3];
 const claimAmount = process.argv[4];
 const fee = process.argv[5];
 
-
 // Invoke the main function with parameters
-claimAllVestingSessions(accountAddress, privateKey, fee, claimAmount);
+claimAllVestingSessions(accountAddress, privateKey, claimAmount, fee);
