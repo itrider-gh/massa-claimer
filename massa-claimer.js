@@ -47,7 +47,7 @@ async function claimAllVestingSessions(accountAddress, privateKey, claimAmount, 
         const baseAccount = await WalletClient.getAccountFromSecretKey(privateKey);
 
         // Create a client for making smart contract calls
-        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
+        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true, baseAccount);
 
         // Attempt to claim the specified amount for each found session ID
         for (let sessionId of sessionIds) {
