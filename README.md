@@ -46,13 +46,13 @@ node massa-claimer.js <accountAddress> <privateKey> <claimAmount> <fee>
 1. Claim 100 MAS with 0.1 MAS fee
 
 ```
-node massa-claimer.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 100 0.1
+node massa-claimer.js A1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 100 0.1
 ```
 
 2. Claim maximum available vesting amount with 0.1 MAS fee
 
 ```
-node massa-claimer.js 1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 0 0.1
+node massa-claimer.js A1EoSju2d35bQ48PgKz... S1fWyEJaFGAVhgH8rStFCasv... 0 0.1
 ```
 
 Replace placeholders with your actual account address, private key, claim amount, and desired fee.
