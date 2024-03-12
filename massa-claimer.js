@@ -12,11 +12,14 @@ async function claimAllVestingSessions(accountAddress, privateKey, claimAmount, 
             process.exit(1);
         }
 
+        // Use private key to create a base account
+        const baseAccount = await WalletClient.getAccountFromSecretKey(privateKey);
+
         // Initialize the client to interact with the Massa network
-        const client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true);
+        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true, baseAccount);
 
         // Fetch datastore keys associated with the smart contract address
-        const addrInfo = await client.publicApiClient.getAddresses([SC_ADDRESS]);
+        const addrInfo = await web3Client.publicApiClient.getAddresses([SC_ADDRESS]);
         const allKeys = addrInfo[0].candidate_datastore_keys;
 
         let sessionIds = [];
@@ -42,12 +45,6 @@ async function claimAllVestingSessions(accountAddress, privateKey, claimAmount, 
             console.log('No vesting sessions found for this address.');
             return;
         }
-
-        // Use private key to create a base account
-        const baseAccount = await WalletClient.getAccountFromSecretKey(privateKey);
-
-        // Create a client for making smart contract calls
-        const web3Client = await ClientFactory.createDefaultClient("https://mainnet.massa.net/api/v2", CHAIN_ID.MainNet, true, baseAccount);
 
         // Attempt to claim the specified amount for each found session ID
         for (let sessionId of sessionIds) {
