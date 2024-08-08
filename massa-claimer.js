@@ -41,7 +41,7 @@ async function claimAllVestingSessions(accountAddress, privateKey, claimAmount, 
             // Call the smart contract function to claim the amount
             const opId = await web3Client.smartContracts().callSmartContract({
                 targetAddress: SC_ADDRESS,
-                functionName: 'claimVestingSession',
+                targetFunction: 'claimVestingSession',
                 parameter: serializedArgs,
                 maxGas: BigInt(4800754),
                 coins: BigInt(0),
